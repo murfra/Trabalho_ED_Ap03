@@ -24,6 +24,7 @@ public:
     ~SparseMatrix();
 
     void insert(int i, int j, double value);
+    void print();
 };
 
 #endif
