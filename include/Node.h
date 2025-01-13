@@ -14,6 +14,8 @@ struct Node
     Node(int lin, int col) {
         this->linha = lin;
         this->coluna = col;
+        this->direito = this;
+        this->abaixo = this;
     }
 
     // Construtor 

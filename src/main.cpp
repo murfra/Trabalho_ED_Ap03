@@ -23,12 +23,16 @@ void menu(){
 
 int main(int argc, char const *argv[])
 {
+    SparseMatrix A = SparseMatrix(3, 3);
     if (argc > 1) {
         cout << argv[1] << endl;
     }
     else {
         cout << "uso: ./sparse_matrix [-h | --help] [filename]" << endl;
     }
+
+    A.print();
+
     
     return 0;
 }
