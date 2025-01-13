@@ -10,7 +10,13 @@ struct Node
     int coluna;
     double valor;
 
-    //Construtor 
+    // Construtor
+    Node(int lin, int col) {
+        this->linha = lin;
+        this->coluna = col;
+    }
+
+    // Construtor 
     Node(int lin, int col, double value)
     {
         this->linha = lin;
