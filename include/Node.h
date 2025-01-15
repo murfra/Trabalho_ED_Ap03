@@ -1,21 +1,19 @@
 #ifndef NODE_H
 #define NODE_H
 
-//Estrutura do nó para as matrizes esparsas
+// Estrutura do nó para as matrizes esparsas
 struct Node
 {
-    Node *direito;
-    Node *abaixo;
+    Node *direito = this;
+    Node *abaixo = this;
     int linha;
     int coluna;
-    double valor;
+    double valor = 0;
 
     // Construtor
     Node(int lin, int col) {
         this->linha = lin;
         this->coluna = col;
-        this->direito = this;
-        this->abaixo = this;
     }
 
     // Construtor 
@@ -24,14 +22,7 @@ struct Node
         this->linha = lin;
         this->coluna = col;
         this->valor = value;
-        this->abaixo = nullptr;
-        this->direito = nullptr;
     }
-
-    
 };
-
-
-
 
 #endif

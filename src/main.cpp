@@ -31,8 +31,12 @@ int main(int argc, char const *argv[])
         cout << "uso: ./sparse_matrix [-h | --help] [filename]" << endl;
     }
 
+    A.insert(2, 2, 7);
+    A.insert(3, 3, 8);
+    A.insert(1, 1, 5);
+    A.insert(1, 2, 4);
     A.print();
-
+    /*A.dbg_print();*/
     
     return 0;
 }

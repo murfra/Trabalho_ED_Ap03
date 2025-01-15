@@ -7,7 +7,7 @@
 class SparseMatrix
 {
 private:
-    Node* m_head;
+    Node* m_head = new Node(0, 0);    // inicializa o nó "sentinela" sem valor
     
 public:
     // Construtor da classe SparseMatrix
@@ -24,7 +24,10 @@ public:
     ~SparseMatrix();
 
     void insert(int i, int j, double value);
+    double get(int i, int j);
+
     void print();
+    void dbg_print();
 };
 
 #endif
