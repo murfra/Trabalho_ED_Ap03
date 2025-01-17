@@ -21,8 +21,8 @@ struct Node
 
     ~Node()
     {
-        delete abaixo;
-        delete direito;
+        if (abaixo != this) delete abaixo; 
+        if (direito != this) delete direito;
     }
 };
 

@@ -1,7 +1,6 @@
 #include "../include/SparseMatrix.h"
 
 #include <iostream>
-#include <ostream>
 
 // Implementação do construtor da classe
 SparseMatrix::SparseMatrix(int m, int n)
@@ -11,12 +10,14 @@ SparseMatrix::SparseMatrix(int m, int n)
     // Inicilizando nós sentinela para cada linha m e coluna n
     for(unsigned short i = m+n; i >= 1; i--)
     {
-        if (i > n) { // inicilizando as colunas (0, n)
+        if (i > n) // inicilizando as colunas (0, n)
+        {
             Node *aux = new Node(0, i-n);
             aux->direito = m_head->direito;
             m_head->direito = aux;
         }
-        else { // inicilizando as linhas (m, 0);
+        else // inicilizando as linhas (m, 0);
+        {
             Node *aux = new Node(i, 0);
             aux->abaixo = m_head->abaixo;
             m_head->abaixo = aux;
@@ -28,6 +29,7 @@ SparseMatrix::SparseMatrix(int m, int n)
 // Implementação do destrutor da classe
 SparseMatrix::~SparseMatrix()
 {
+    delete m_head;
 }
 
 void SparseMatrix::insert(int i, int j, double value) // Acredito que dê pra melhorar
@@ -38,19 +40,23 @@ void SparseMatrix::insert(int i, int j, double value) // Acredito que dê pra me
         Node *temp = new Node(i, j, value);
         Node *aux = m_head->direito;
 
-        while (aux->coluna != j) aux = aux->direito; // move o aux até a coluna n
+        while (aux->coluna != j) aux = aux->direito; // move o aux até a coluna j
         temp->abaixo = aux->abaixo;
         aux->abaixo = temp;
 
-        aux = m_head->abaixo;
-        while (aux->linha != i) aux = aux->abaixo; // move o aux até a linha m
-        for (int i = 0; i < j; i++) aux = aux->direito; // move até a último "direito", até a última coluna, no caso
+        aux = m_head->abaixo; // redefine aux para começar da linha 1, coluna 0
+        while (aux->linha != i) aux = aux->abaixo; // move o aux até a linha i
+        
+        // move até o último "direito", até a última coluna, no caso
+        while (aux->direito->coluna != 0) aux = aux->direito;
+
+        temp->direito = aux->direito; // faz temp apontar para onde aux apontava (o começo da linha)
         aux->direito = temp; // aponta o direito para o temp
-        temp = aux; // faz temp apontar para o começo da linha
     }
 }
 
-double SparseMatrix::get(int i, int j) { // precisa ser implementada
+double SparseMatrix::get(int i, int j) // precisa ser implementada
+{
     if (i <= 0 && j <= 0) throw std::runtime_error("Invalid line or column");
     return 0;
 }
@@ -61,7 +67,7 @@ void SparseMatrix::print() { // acredito que dê pra melhorar
     for (int i = 1; i <= 3; i++)
     {
         Node *temp = aux->direito; // pega o valor direito do aux, seria algo como m_head->abaixo->direito
-         std::cout << "[ ";
+        std::cout << "[ ";
         for (int j = 1; j <= 3; j++)
         {
             if (temp->valor != 0 && temp->coluna == j) std::cout << temp->valor << " ";

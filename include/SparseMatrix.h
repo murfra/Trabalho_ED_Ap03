@@ -27,7 +27,6 @@ public:
     double get(int i, int j);
 
     void print();
-    void dbg_print();
 };
 
 #endif
