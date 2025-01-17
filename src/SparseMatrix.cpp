@@ -1,7 +1,6 @@
 #include "../include/SparseMatrix.h"
 
 #include <iostream>
-#include <ostream>
 
 // Implementação do construtor da classe
 SparseMatrix::SparseMatrix(int m, int n)
