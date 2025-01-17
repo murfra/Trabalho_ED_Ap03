@@ -1,11 +1,12 @@
 #include "../include/SparseMatrix.h"
 
 #include <iostream>
+#include <ostream>
 
 // Implementação do construtor da classe
 SparseMatrix::SparseMatrix(int m, int n)
 {
-    if (m < 0 && n < 0) throw std::runtime_error("Invalid line or column");
+    if (m <= 0 && n <= 0) throw std::runtime_error("Invalid line or column");
   
     // Inicilizando nós sentinela para cada linha m e coluna n
     for(unsigned short i = m+n; i >= 1; i--)
@@ -31,72 +32,45 @@ SparseMatrix::~SparseMatrix()
 
 void SparseMatrix::insert(int i, int j, double value) // Acredito que dê pra melhorar
 {
-    if (i < 0 && j < 0) throw std::runtime_error("Invalid line or column");
+    if (i <= 0 && j <= 0) throw std::runtime_error("Invalid line or column");
     if (value != 0)
     {
         Node *temp = new Node(i, j, value);
-        Node *aux = m_head;
-        Node *aux2 = m_head;
+        Node *aux = m_head->direito;
 
-        while (aux->coluna != j) aux = aux->direito; // move o aux1 até a posição (0, n)
+        while (aux->coluna != j) aux = aux->direito; // move o aux até a coluna n
         temp->abaixo = aux->abaixo;
         aux->abaixo = temp;
 
-        while (aux2->linha != i) aux2 = aux2->abaixo; // move o aux2 até a posição (m, 0)
-        temp->direito = aux2->direito;
-        aux2->direito = temp;
-
-        /*std::cout << "Iserido!\ntemp->direito: " << '(' << temp->direito->linha*/
-        /*          << ", " << temp->direito->coluna << "), temp->abaixo: "*/
-        /*          << '(' << temp->abaixo->linha << ", " << temp->abaixo->coluna << ")\n";*/
+        aux = m_head->abaixo;
+        while (aux->linha != i) aux = aux->abaixo; // move o aux até a linha m
+        for (int i = 0; i < j; i++) aux = aux->direito; // move até a último "direito", até a última coluna, no caso
+        aux->direito = temp; // aponta o direito para o temp
+        temp = aux; // faz temp apontar para o começo da linha
     }
 }
 
 double SparseMatrix::get(int i, int j) { // precisa ser implementada
-    if (i < 0 && j < 0) throw std::runtime_error("Invalid line or column");
+    if (i <= 0 && j <= 0) throw std::runtime_error("Invalid line or column");
     return 0;
 }
 
-void SparseMatrix::print() { // Não está certa
-    Node* aux_d = m_head->direito->abaixo;
+void SparseMatrix::print() { // acredito que dê pra melhorar
+    Node *aux = m_head->abaixo;
 
-    for (int i = 1; i <= 3; i++) {
-        std::cout << "[ ";
-        for (int j = 1; j <= 3; j++) {
-            if (aux_d->linha == i && aux_d->coluna == j && aux_d->valor) {
-                std::cout << aux_d->valor << ' ';
-                aux_d = aux_d->direito;
-                continue;
-            }
-            std::cout << aux_d->valor << std::endl;
-            aux_d = m_head->direito->abaixo->abaixo;
-
-            std::cout << 0 << ' ';
-        }
-        std::cout << "]" << std::endl;
-    }
-}
-
-// Função teste
-void SparseMatrix::dbg_print()
-{
-    Node* aux_d = m_head;
-    Node* aux_b = m_head->abaixo;
-
-
-    for (int i = 0; i <= 3; i++)
+    for (int i = 1; i <= 3; i++)
     {
-        std::cout << '(' << aux_d->linha << ", " << aux_d->coluna << ") "; // imprime (m, n)
-        aux_d = aux_d->direito;
-    }
-    std::cout << std::endl;
-    for (int i = 0; i < 3; i++)
-    {
-        std::cout << '(' << aux_b->linha << ", " << aux_b->coluna << ") "; // imprime (m, n)
-        if (aux_b->direito != 0) {
-            std::cout << aux_b->direito->valor; // imprime (m, n)
+        Node *temp = aux->direito; // pega o valor direito do aux, seria algo como m_head->abaixo->direito
+         std::cout << "[ ";
+        for (int j = 1; j <= 3; j++)
+        {
+            if (temp->valor != 0 && temp->coluna == j) std::cout << temp->valor << " ";
+            else std::cout << 0 << " ";
+
+            if (temp->valor == 0 || j == temp->coluna) temp = temp->direito;
         }
-        std::cout << std::endl;
-        aux_b = aux_b->abaixo;
+
+        aux = aux->abaixo;
+        std::cout << ']' << std::endl;
     }
 }

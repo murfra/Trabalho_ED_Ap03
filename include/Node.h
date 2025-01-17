@@ -4,24 +4,25 @@
 // Estrutura do nó para as matrizes esparsas
 struct Node
 {
-    Node *direito = this;
-    Node *abaixo = this;
     int linha;
     int coluna;
-    double valor = 0;
+    double valor;
+    Node *abaixo;
+    Node *direito;
 
     // Construtor
-    Node(int lin, int col) {
-        this->linha = lin;
-        this->coluna = col;
-    }
+    Node(int lin, int col) : linha(lin), coluna(col), abaixo(this), direito(this) {}
 
     // Construtor 
-    Node(int lin, int col, double value)
+    Node(int lin, int col, double value) : Node(lin, col)
     {
-        this->linha = lin;
-        this->coluna = col;
         this->valor = value;
+    }
+
+    ~Node()
+    {
+        delete abaixo;
+        delete direito;
     }
 };
 
