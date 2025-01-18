@@ -3,7 +3,7 @@
 #include <iostream>
 
 // Implementação do construtor da classe
-SparseMatrix::SparseMatrix(int m, int n)
+SparseMatrix::SparseMatrix(int m, int n) : linhas(m), colunas(n)
 {
     if (m <= 0 && n <= 0) throw std::runtime_error("Invalid line or column");
   
@@ -34,8 +34,8 @@ SparseMatrix::~SparseMatrix()
 
 void SparseMatrix::insert(int i, int j, double value) // Acredito que dê pra melhorar
 {
-    if (i <= 0 && j <= 0) throw std::runtime_error("Invalid line or column");
-    if (value != 0)
+    if (i <= 0 || i > linhas || j <= 0 || j > colunas) throw std::runtime_error("Invalid line or column");
+    else if (value != 0)
     {
         Node *temp = new Node(i, j, value);
         Node *aux = m_head->direito;
@@ -57,18 +57,18 @@ void SparseMatrix::insert(int i, int j, double value) // Acredito que dê pra me
 
 double SparseMatrix::get(int i, int j) // precisa ser implementada
 {
-    if (i <= 0 && j <= 0) throw std::runtime_error("Invalid line or column");
+    if (i <= 0 || i > linhas || j <= 0 || j > colunas) throw std::runtime_error("Invalid line or column");
     return 0;
 }
 
 void SparseMatrix::print() { // acredito que dê pra melhorar
     Node *aux = m_head->abaixo;
 
-    for (int i = 1; i <= 3; i++)
+    for (int i = 1; i <= linhas; i++)
     {
         Node *temp = aux->direito; // pega o valor direito do aux, seria algo como m_head->abaixo->direito
         std::cout << "[ ";
-        for (int j = 1; j <= 3; j++)
+        for (int j = 1; j <= colunas; j++)
         {
             if (temp->valor != 0 && temp->coluna == j) std::cout << temp->valor << " ";
             else std::cout << 0 << " ";

@@ -8,6 +8,8 @@ class SparseMatrix
 {
 private:
     Node* m_head = new Node(0, 0);    // inicializa o nó "sentinela" sem valor
+    int linhas = 0;
+    int colunas = 0;
     
 public:
     // Construtor da classe SparseMatrix

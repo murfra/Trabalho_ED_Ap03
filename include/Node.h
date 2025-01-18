@@ -19,11 +19,11 @@ struct Node
         this->valor = value;
     }
 
-    ~Node()
+    /*~Node()
     {
         if (abaixo != this) delete abaixo; 
         if (direito != this) delete direito;
-    }
+    }*/
 };
 
 #endif
