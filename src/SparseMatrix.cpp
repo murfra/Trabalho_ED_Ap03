@@ -8,7 +8,7 @@ SparseMatrix::SparseMatrix(int m, int n) : linhas(m), colunas(n)
     if (m <= 0 && n <= 0) throw std::runtime_error("Invalid line or column");
   
     // Inicilizando nós sentinela para cada linha m e coluna n
-    for(unsigned short i = m+n; i >= 1; i--)
+    for(int i = m+n; i >= 1; i--)
     {
         if (i > n) // inicilizando as colunas (0, n)
         {
@@ -27,7 +27,7 @@ SparseMatrix::SparseMatrix(int m, int n) : linhas(m), colunas(n)
 }
 
 // Implementação do destrutor da classe
-SparseMatrix::~SparseMatrix()
+SparseMatrix::~SparseMatrix() // Precisa ser terminada, por enquanto ela só apaga o nó principal
 {
     delete m_head;
 }
@@ -70,10 +70,10 @@ void SparseMatrix::print() { // acredito que dê pra melhorar
         std::cout << "[ ";
         for (int j = 1; j <= colunas; j++)
         {
-            if (temp->valor != 0 && temp->coluna == j) std::cout << temp->valor << " ";
+            if (temp->coluna == j) std::cout << temp->valor << " ";
             else std::cout << 0 << " ";
 
-            if (temp->valor == 0 || j == temp->coluna) temp = temp->direito;
+            if (j == temp->coluna) temp = temp->direito;
         }
 
         aux = aux->abaixo;
