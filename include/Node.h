@@ -14,16 +14,9 @@ struct Node
     Node(int lin, int col) : linha(lin), coluna(col), abaixo(this), direito(this) {}
 
     // Construtor 
-    Node(int lin, int col, double value) : Node(lin, col)
-    {
+    Node(int lin, int col, double value) : Node(lin, col) {
         this->valor = value;
     }
-
-    /*~Node()
-    {
-        if (abaixo != this) delete abaixo; 
-        if (direito != this) delete direito;
-    }*/
 };
 
 #endif
