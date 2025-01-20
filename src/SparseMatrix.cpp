@@ -24,38 +24,52 @@ SparseMatrix::SparseMatrix(int m, int n) : linhas(m), colunas(n) {
 
 // Implementação do destrutor da classe
 SparseMatrix::~SparseMatrix() {
-    /*
-        [][][][d]
-        []()()(^)
-        []()()(^)
-        []()(<)(^)<-
+    //Cara, a ideia é usar como condição se o final do loop é igual a cabeça
+    //fica mais ou menos assim
+    //  col
+    //  |
+    //  v
+    //[][][][]
+    //[]()()() atual recebe o col->abaixo(1,1)
+    //[]()()()
+    //[]()()()
+    //
+    // dai o temp recebe o atual só pro atual poder receber o atual->abaixo (se deslocar)
+    // apaga o temp que aponta para o (1,1) {antiga posição do atual}
+    // dai faz algo similar só que com as colunas sentinelas
+    // por último é que apaga a coluna da cabeça
 
-        Objetivo: precisamos apagar todos os nós não-sentinelas, ou seja, até que o abaixo->linha seja != 0
-        verificar se a coluna possui nós abaixo dela, se não apaga o nó, fazendo apontar para outro lugar
-    */
-    // while (m_head->direito != m_head && m_head->abaixo != m_head) {
-    //     Node *aux = m_head;
+    // Libera os nós em cada coluna
+
+    // Começa de (0, 1) 
+    Node* col = m_head->direito;
+    while (col != m_head) // Anda as colunas
+    {
+        Node* atual = col->abaixo; // Primeiro nó na coluna (1,1)
+        while (atual != col) // Percorre todos os nós na coluna
+        {
+            
+            Node* temp = atual;
+            atual = atual->abaixo;
+            delete temp; // Libera o nó atual
+        }
         
-    //     while (aux->direito->coluna != 0) {
-    //         if (aux->direito->direito->abaixo->linha == 0) {
-    //             Node *temp = aux->direito->direito;
-    //             aux->direito = temp->direito;
-    //             delete temp;
-    //         }
-    //         aux = aux->direito;
-    //     }
 
-    //     Node *temp = aux->abaixo;
-    //     if (aux->abaixo->linha == 0) {
-    //         std::cout << "direita: " << '(' << aux->abaixo->direito->linha << ", " << aux->abaixo->direito->coluna
-    //         << ") -> " << aux->abaixo->direito->valor << std::endl; 
-    //     }
-    //     else {
-    //         aux->abaixo = temp->abaixo;
-    //         std::cout << "deleted: "  << '(' << temp->linha << ", " << temp->coluna << ") -> " << temp->valor << std::endl;
-    //         delete temp;
-    //     }
-    // }
+        Node* temp = col;
+        col = col->direito;
+        delete temp; // Libera o nó sentinela da coluna
+    }
+
+    // Libera os nós sentinelas das linhas
+    Node* linha = m_head->abaixo; // Começa na primeira linha (1, 0)
+    while (linha != m_head) // Anda as linhas
+    {
+        Node* temp = linha;
+        linha = linha->abaixo;
+        delete temp; // Libera o nó sentinela da linha
+    }
+
+    delete m_head;
 }
 
 void SparseMatrix::insert(int i, int j, double value) {
