@@ -27,9 +27,40 @@ SparseMatrix::SparseMatrix(int m, int n) : linhas(m), colunas(n)
 }
 
 // Implementação do destrutor da classe
-SparseMatrix::~SparseMatrix() // Precisa ser terminada, por enquanto ela só apaga o nó principal
+SparseMatrix::~SparseMatrix()
 {
-    delete m_head;
+    /*
+        [][][][d]
+        []()()(^)
+        []()()(^)
+        []()(<)(^)<-
+
+        Objetivo: precisamos apagar todos os nós não-sentinelas, ou seja, até que o abaixo->linha seja != 0
+        verificar se a coluna possui nós abaixo dela, se não apaga o nó, fazendo apontar para outro lugar
+    */
+    // while (m_head->direito != m_head && m_head->abaixo != m_head) {
+    //     Node *aux = m_head;
+        
+    //     while (aux->direito->coluna != 0) {
+    //         if (aux->direito->direito->abaixo->linha == 0) {
+    //             Node *temp = aux->direito->direito;
+    //             aux->direito = temp->direito;
+    //             delete temp;
+    //         }
+    //         aux = aux->direito;
+    //     }
+
+    //     Node *temp = aux->abaixo;
+    //     if (aux->abaixo->linha == 0) {
+    //         std::cout << "direita: " << '(' << aux->abaixo->direito->linha << ", " << aux->abaixo->direito->coluna
+    //         << ") -> " << aux->abaixo->direito->valor << std::endl; 
+    //     }
+    //     else {
+    //         aux->abaixo = temp->abaixo;
+    //         std::cout << "deleted: "  << '(' << temp->linha << ", " << temp->coluna << ") -> " << temp->valor << std::endl;
+    //         delete temp;
+    //     }
+    // }
 }
 
 void SparseMatrix::insert(int i, int j, double value)
@@ -43,22 +74,30 @@ void SparseMatrix::insert(int i, int j, double value)
     
     else if (value != 0)
     {
-        Node *temp = new Node(i, j, value);
         Node *aux = m_head->direito;
 
         while (aux->coluna != j) aux = aux->direito; // move o aux até a coluna j
-        temp->abaixo = aux->abaixo;
-        aux->abaixo = temp;
 
-        aux = m_head->abaixo; // redefine aux para começar da linha 1, coluna 0
-        while (aux->linha != i) aux = aux->abaixo; // move o aux até a linha i
-        
-        // move até o último "direito", até a última coluna, no caso
-        while (aux->direito->coluna != 0) aux = aux->direito;
+        // verifica se já existe //
+        if (aux->abaixo->linha == i && aux->abaixo->coluna == j) {
+            aux->abaixo->valor = value;
+        }
+        //
+        else {
+            Node *temp = new Node(i, j, value);
+            temp->abaixo = aux->abaixo;
+            aux->abaixo = temp;
 
-        temp->direito = aux->direito; // faz temp apontar para onde aux apontava (o começo da linha)
-        aux->direito = temp; // aponta o direito para o temp
-        
+            aux = m_head->abaixo; // redefine aux para começar da linha 1, coluna 0
+            while (aux->linha != i) aux = aux->abaixo; // move o aux até a linha i
+            
+            // move até o último "direito", até a última coluna, no caso
+            while (aux->direito->coluna != 0) aux = aux->direito;
+
+            temp->direito = aux->direito; // faz temp apontar para onde aux apontava (o começo da linha)
+            aux->direito = temp; // aponta o direito para o temp
+            
+        }
     }
 }
 
