@@ -39,8 +39,11 @@ int main(int argc, char const *argv[])
     A.insert(2, 3, 6);
     A.insert(3, 1, 7);
     /*A.insert(3, 2, 8);*/
+    A.insert(1, 3, 9);
     A.insert(3, 3, 9);
     A.print();
+    cout << A.get(3, 3) << endl;
+    //A.print();
     
     return 0;
 }
