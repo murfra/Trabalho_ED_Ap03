@@ -43,18 +43,14 @@ SparseMatrix::~SparseMatrix() {
 
     // Começa de (0, 1) 
     Node* col = m_head->direito;
-    while (col != m_head) // Anda as colunas
-    {
+    while (col != m_head) { // Anda as colunas
         Node* atual = col->abaixo; // Primeiro nó na coluna (1,1)
-        while (atual != col) // Percorre todos os nós na coluna
-        {
-            
+        while (atual != col) { // Percorre todos os nós na coluna
             Node* temp = atual;
             atual = atual->abaixo;
             delete temp; // Libera o nó atual
         }
         
-
         Node* temp = col;
         col = col->direito;
         delete temp; // Libera o nó sentinela da coluna
@@ -62,8 +58,7 @@ SparseMatrix::~SparseMatrix() {
 
     // Libera os nós sentinelas das linhas
     Node* linha = m_head->abaixo; // Começa na primeira linha (1, 0)
-    while (linha != m_head) // Anda as linhas
-    {
+    while (linha != m_head) { // Anda as linhas
         Node* temp = linha;
         linha = linha->abaixo;
         delete temp; // Libera o nó sentinela da linha
@@ -109,8 +104,7 @@ void SparseMatrix::insert(int i, int j, double value) {
 double SparseMatrix::get(int i, int j) {
     //Verifica se os parâmetros i(linha) e j (coluna)
     //estão dentro dos limites
-    if (i <= 0 || i > linhas || j <= 0 || j > colunas)
-    {
+    if (i <= 0 || i > linhas || j <= 0 || j > colunas) {
         throw std::out_of_range("Invalid line or column");
     }
 
