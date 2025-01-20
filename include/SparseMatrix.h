@@ -11,6 +11,8 @@ private:
     int linhas = 0;
     int colunas = 0;
     
+    
+    
 public:
     // Construtor da classe SparseMatrix
     // Essa função verifica se os valores de linha e coluna
@@ -27,7 +29,6 @@ public:
 
     void insert(int i, int j, double value);
     double get(int i, int j);
-
     void print();
 };
 

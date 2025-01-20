@@ -5,7 +5,7 @@
 // Implementação do construtor da classe
 SparseMatrix::SparseMatrix(int m, int n) : linhas(m), colunas(n)
 {
-    if (m <= 0 && n <= 0) throw std::runtime_error("Invalid line or column");
+    if (m <= 0 || m > linhas || n <= 0 || n > colunas) throw std::runtime_error("Invalid line or column");
   
     // Inicilizando nós sentinela para cada linha m e coluna n
     for(int i = m+n; i >= 1; i--)
@@ -32,9 +32,15 @@ SparseMatrix::~SparseMatrix() // Precisa ser terminada, por enquanto ela só apa
     delete m_head;
 }
 
-void SparseMatrix::insert(int i, int j, double value) // Acredito que dê pra melhorar
+void SparseMatrix::insert(int i, int j, double value)
 {
-    if (i <= 0 || i > linhas || j <= 0 || j > colunas) throw std::runtime_error("Invalid line or column");
+    // Teste de verificação de limites para as linhas
+    // veja que não podem ser negativas
+    
+    if (i <= 0 || i > linhas || j <= 0 || j > colunas){
+        throw std::runtime_error("Invalid line or column");
+    }
+    
     else if (value != 0)
     {
         Node *temp = new Node(i, j, value);
@@ -52,13 +58,39 @@ void SparseMatrix::insert(int i, int j, double value) // Acredito que dê pra me
 
         temp->direito = aux->direito; // faz temp apontar para onde aux apontava (o começo da linha)
         aux->direito = temp; // aponta o direito para o temp
+        
     }
 }
 
 double SparseMatrix::get(int i, int j) // precisa ser implementada
 {
-    if (i <= 0 || i > linhas || j <= 0 || j > colunas) throw std::runtime_error("Invalid line or column");
-    return 0;
+    //Verifica se os parâmetros i(linha) e j (coluna)
+    //estão dentro dos limites
+    if (i <= 0 || i > linhas || j <= 0 || j > colunas){
+        throw std::runtime_error("Invalid line or column");
+    }
+
+    //Cria um ponteiro para Node que
+    //recebe m_head
+    Node* aux = m_head;
+    
+    //Percorre até a coluna especificada
+    //pelo paramêtro j
+    while (aux->coluna != j)
+    {
+        aux = aux->direito;
+    }
+    
+    //Percorre até a linha especificada
+    //pela parâmetro i
+    while (aux->linha != i)
+    { 
+        aux = aux->abaixo;
+    } 
+
+    //Por fim, retorna o valor apontado
+    //pelo ponteiro para Node ax
+    return aux->valor;
 }
 
 void SparseMatrix::print() { // acredito que dê pra melhorar
