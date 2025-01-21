@@ -5,7 +5,7 @@
 
 // Implementação do construtor da classe
 SparseMatrix::SparseMatrix(int m, int n) : linhas(m), colunas(n) {
-    if (m <= 0 || m > linhas || n <= 0 || n > colunas) throw std::out_of_range("Invalid line or column");
+    if (m <= 0 || n <= 0) throw std::out_of_range("Invalid line or column");
   
     // Inicilizando nós sentinela para cada linha m e coluna n
     for(int i = m+n; i >= 1; i--) {
@@ -138,4 +138,27 @@ void SparseMatrix::print() { // acredito que dê pra melhorar
         aux = aux->abaixo;
         std::cout << ']' << std::endl;
     }
+}
+
+SparseMatrix& SparseMatrix::operator=(const SparseMatrix& matriz) {
+    this->~SparseMatrix();
+    this->m_head = new Node(0, 0);
+    linhas = matriz.linhas;
+    colunas = matriz.colunas;
+    
+    SparseMatrix *m = new SparseMatrix(linhas, colunas);
+
+    return *m;
+}
+
+int SparseMatrix::getLines() {
+  return linhas;
+}
+
+int SparseMatrix::getCols() {
+  return colunas;
+}
+
+int SparseMatrix::getSize() {
+  return linhas*colunas;
 }

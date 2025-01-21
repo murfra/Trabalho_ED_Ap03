@@ -10,10 +10,9 @@ private:
     Node* m_head = new Node(0, 0);    // inicializa o nó "sentinela" sem valor
     int linhas = 0;
     int colunas = 0;
-    
-    
-    
+
 public:
+    SparseMatrix() = default;
     // Construtor da classe SparseMatrix
     // Essa função verifica se os valores de linha e coluna
     // (m e n respectivamente) são válidos e inicializa
@@ -28,8 +27,15 @@ public:
     ~SparseMatrix();
 
     void insert(int i, int j, double value);
-    double get(int i, int j);
     void print();
+
+    double get(int i, int j);
+
+    int getLines();
+    int getCols();
+    int getSize();
+
+    SparseMatrix& operator=(const SparseMatrix& matriz);
 };
 
 #endif

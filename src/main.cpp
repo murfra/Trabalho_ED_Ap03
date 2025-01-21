@@ -29,6 +29,26 @@ void enfeites2() {
     }
 }
 
+void readSparseMatrix(SparseMatrix& m, string filename) {
+    ifstream file(filename);
+    if (file.is_open()) {
+        int lin, col, i, j;
+        double v;
+
+        /*cout << m << endl;*/
+        file >> lin >> col;
+        m = SparseMatrix(lin, col);
+        cout << "Ops!" <<endl;
+
+        m.insert(1, 1, 1);
+        /*while (file >> i >> j >> v) {*/
+        /*    cout << i << j << v << endl;*/
+        /*    m.insert(i, j, v);*/
+        /*}*/
+        m.print(); // lembrar de apagar
+    }
+}
+
 //Função que realiza a operação de soma
 //de duas matrizes A e B e retorna uma
 //matriz C como o resultado da soma
@@ -55,42 +75,29 @@ void help() {
 
 int main(int argc, char const *argv[])
 {
-    SparseMatrix A = SparseMatrix(3, 3);
+    /*SparseMatrix A = SparseMatrix(3, 3);*/
+    SparseMatrix B;
 
     // leitura do arquivo
-    /*if (argc == 1 || string(argv[1]) == "-h" || string(argv[1]) == "--help") help();*/
-    /*else {*/
-    /*    ifstream file(argv[1]);*/
-    /*    if (file.is_open()) {*/
-    /*        int m, n, i, j;*/
-    /*        double v;*/
+    if (argc == 1 || string(argv[1]) == "-h" || string(argv[1]) == "--help") help();
+    else readSparseMatrix(B, argv[1]);
+
+    /*B.print();*/
+    /*A.insert(1, 3, 3);*/
+    /*A.insert(1, 3, 10);*/
     /**/
-    /*        file >> m >> n;*/
-    /*        SparseMatrix B = SparseMatrix(m, n);*/
+    /*A.insert(2, 3, 1);*/
+    /*A.insert(2, 3, 7);*/
     /**/
-    /*        while (file >> i >> j >> v) {*/
-    /*            cout << i << j << v << endl;*/
-    /*            B.insert(i, j, v);*/
-    /*        }*/
-    /*        B.print(); // lembrar de apagar*/
-    /*    }*/
-    /*}*/
-
-    A.insert(1, 3, 3);
-    A.insert(1, 3, 10);
-
-    A.insert(2, 3, 1);
-    A.insert(2, 3, 7);
-
-    A.insert(3, 3, 1);
-    A.insert(3, 3, 4);
-    A.insert(3, 3, 9);
-
-    cout << A.get(1, 3) <<endl; // 10
-    cout << A.get(2, 3) <<endl; // 7
-    cout << A.get(3, 3) <<endl; // 9
-
-    A.print();
+    /*A.insert(3, 3, 1);*/
+    /*A.insert(3, 3, 4);*/
+    /*A.insert(3, 3, 9);*/
+    /**/
+    /*cout << A.get(1, 3) <<endl; // 10*/
+    /*cout << A.get(2, 3) <<endl; // 7*/
+    /*cout << A.get(3, 3) <<endl; // 9*/
+    /**/
+    /*A.print();*/
     
     return 0;
 }
