@@ -4,7 +4,7 @@ CXX = g++
 CXXFLAGS = -Iinclude -Wall -Wextra -std=c++17
 SRC = $(wildcard src/*.cpp)
 OBJ = $(patsubst src/%.cpp, build/%.o, $(SRC))
-TARGET = sparse_matrix
+TARGET = sparse_matrix.exe
 
 # Regra principal
 all: $(TARGET)

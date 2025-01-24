@@ -8,14 +8,25 @@
  * implementar matrizes esparsas.
  */
 
+
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <iomanip>
-#include <unistd.h>
+#include <cstdlib>
+
 
 #include "../include/SparseMatrix.h"
 
+const char* user = std::getenv(
+    #if defined(_WIN32)
+        "USERNAME" // No Windows
+    #else
+        "USER" // Em sistemas UNIX/Linux
+    #endif
+    );
+
+    
 using namespace std;
 
 void readSparseMatrix(SparseMatrix& m, string filename) {
@@ -68,8 +79,16 @@ SparseMatrix multiply(SparseMatrix& A, SparseMatrix& B) {
 
 void displayMenu() {
     cout << setfill('=') << setw(18) << "" << endl;
-    cout << (getlogin() == nullptr) << endl;
-    cout << "Olá, " << "! Em que posso te ajudar?" <<endl;
+    cout << "Olá, ";
+    if (user)
+    {
+      cout << "Olá, " << user << "!";  
+    }
+    else{
+        cout << "Olá!"; 
+    }
+    
+    cout << " Em que posso te ajudar?" << endl;
     cout << setfill('-') << setw(18) << "" << endl;
     cout << "[1] Criar matriz"<< endl;
     cout << "[2] Somar matrizes"<< endl;
@@ -87,7 +106,9 @@ void help() {
 }
 
 int main(int argc, char const *argv[])
-{
+{   
+    
+
     SparseMatrix A = SparseMatrix(3, 3);
     SparseMatrix B = SparseMatrix(3,3);
 
