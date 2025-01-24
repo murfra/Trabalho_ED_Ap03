@@ -59,29 +59,33 @@ SparseMatrix* sum(SparseMatrix& A, SparseMatrix& B) {
 }
 
 SparseMatrix* multiply(SparseMatrix& A, SparseMatrix& B) {
-    if (A.getCols() == B.getLines())
-    {
-        SparseMatrix* C = new SparseMatrix(A.getCols(), B.getCols());
-        double soma = 0;
-        for(int i = 1; i <= C->getLines(); i++){
-            for (int j = 1; j <= C->getCols(); j++)
-            {
-                soma = A.get(i, j) + B.get(j, i);
+    if (A.getCols() != B.getLines()) {
+        cout << "Não é possível multiplicar as matrizes ;("
+        << "O número de colunas da matriz A deve ser igual ao número de linhas da matriz B." 
+        << endl;
+        return nullptr;
+    }
+
+    SparseMatrix* C = new SparseMatrix(A.getLines(), B.getCols());
+    
+    for (int i = 1; i <= A.getLines(); i++) {
+        for (int j = 1; j <= B.getCols(); j++) {
+            double soma = 0;
+
+            for (int k = 1; k <= A.getCols(); k++) {
+                soma += A.get(i, k) * B.get(k, j);
+            }
+
+            // Insere !='s de zero, somente
+            if (soma != 0) {
                 C->insert(i, j, soma);
             }
-            soma = 0;
         }
-
-        return C;
     }
 
-    else{
-        cout << "Não é possível multiplicar matrizes de dimensões distintas ;(" 
-             << "Só é possível caso seja 2x2, 3x3 e por assim vai..." << endl;
-        return new SparseMatrix();
-    }
-
+    return C;
 }
+
 
 void displayMenu() {
     // Exibe o nome de usuário do aparelho
