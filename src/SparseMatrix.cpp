@@ -64,7 +64,9 @@ void SparseMatrix::insert(int i, int j, double value) {
     else if (value != 0) {
         Node *aux = m_head->direito;
 
-        while (aux->coluna != j) aux = aux->direito; // move o aux até a coluna j
+        // move o aux até a coluna j
+        while (aux->coluna != j) aux = aux->direito;
+        // move o aux até a linha i ou até quse seja igual a 0
         while (aux->abaixo->linha != 0 && aux->abaixo->linha != i) aux = aux->abaixo;
 
         // verifica se já existe uma célula na posição i, j
@@ -80,7 +82,7 @@ void SparseMatrix::insert(int i, int j, double value) {
             // move até o último "direito", até a última coluna, no caso
             while (aux->direito->coluna != 0) aux = aux->direito;
 
-            temp->direito = aux->direito; // faz temp apontar para onde aux apontava (o começo da linha)
+            temp->direito = aux->direito; // faz temp apontar para o começo da linha
             aux->direito = temp; // aponta o direito para o temp
             
         }
@@ -112,7 +114,7 @@ void SparseMatrix::print() {
     Node *aux = m_head->abaixo;
 
     for (int i = 1; i <= linhas; i++) {
-        Node *temp = aux->direito; // pega o valor direito do aux, seria algo como m_head->abaixo->direito
+        Node *temp = aux->direito; 
 
         std::cout << "[ ";
         for (int j = 1; j <= colunas; j++) {

@@ -17,34 +17,20 @@
 
 #include "../include/SparseMatrix.h"
 
-const char* user = std::getenv(
-    #if defined(_WIN32)
-        "USERNAME" // No Windows
-    #else
-        "USER" // Em sistemas UNIX/Linux
-    #endif
-    );
-
-    
 using namespace std;
 
+// Função responsável por ler um arquivo e retornar
+// uma SparseMatrix conforme está no arquivo lido
 void readSparseMatrix(SparseMatrix& m, string filename) {
     ifstream file(filename);
     if (file.is_open()) {
         int lin, col, i, j;
         double v;
 
-        /*cout << m << endl;*/
         file >> lin >> col;
         m = SparseMatrix(lin, col);
 
-        m.insert(1, 1, 1);
-        m.insert(4, 4, 4);
-        /*while (file >> i >> j >> v) {*/
-        /*    m.insert(i, j, v);*/
-        /*}*/
-        /*cout << "Ok" << endl;*/
-        /*m.print(); // lembrar de apagar*/
+        while (file >> i >> j >> v) m.insert(i, j, v);
     }
 }
 
@@ -75,18 +61,20 @@ SparseMatrix* sum(SparseMatrix& A, SparseMatrix& B) {
 SparseMatrix multiply(SparseMatrix& A, SparseMatrix& B) {
 }
 
-
 void displayMenu() {
+    // Exibe o nome de usuário do aparelho
+    const char* user = getenv(
+        #if defined(_WIN32)
+            "USERNAME" // No Windows
+        #else
+            "USER" // Em sistemas UNIX/Linux
+        #endif
+    );
     cout << setfill('=') << setw(18) << "" << endl;
-    cout << "Olá, ";
-    if (user)
-    {
-      cout << "Olá, " << user << "!";  
-    }
-    else{
-        cout << "Olá!"; 
-    }
-    
+
+    if (user) cout << "Olá, " << user << "!";  
+    else cout << "Olá!"; 
+
     cout << " Em que posso te ajudar?" << endl;
     cout << setfill('-') << setw(18) << "" << endl;
     cout << "[1] Criar matriz"<< endl;
@@ -104,19 +92,18 @@ void help() {
     cout << "Mostra opções de ajuda\n";
 }
 
-int main(int argc, char const *argv[])
-{   
-    
+int main(int argc, char const *argv[]) {   
+    string arg1 = string(argv[1]);
 
     SparseMatrix A = SparseMatrix(3, 3);
     SparseMatrix B = SparseMatrix(3,3);
 
     // leitura do arquivo
-    if (argc == 1 || string(argv[1]) == "-h" || string(argv[1]) == "--help") help();
-    // else if (string(argv[1]) == "-f" || string(argv[1]) == "--file") {
-    //     cout << "Arquivo carregado!" << endl;
-    //     readSparseMatrix(B, argv[2]);
-    // }
+    if (argc == 1 || arg1 == "-h" || arg1 == "--help") help();
+    else if (arg1 == "-f" || arg1 == "--file") {
+        cout << "Arquivo carregado!" << endl;
+        readSparseMatrix(B, argv[2]);
+    }
     else displayMenu();
 
     // B.print();
