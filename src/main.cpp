@@ -15,7 +15,6 @@
 #include <iomanip>
 #include <cstdlib>
 
-
 #include "../include/SparseMatrix.h"
 
 const char* user = std::getenv(
