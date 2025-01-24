@@ -1,10 +1,13 @@
-# código gerado automaticamente (talvez precise de alguma modificação)
 # Variáveis
 CXX = g++
 CXXFLAGS = -Iinclude -Wall -Wextra -std=c++17
 SRC = $(wildcard src/*.cpp)
 OBJ = $(patsubst src/%.cpp, build/%.o, $(SRC))
-TARGET = sparse_matrix.exe
+
+# Verificando o sistema operacional
+ifeq ($(OS),Windows_NT) TARGET = sparse_matrix.exe
+else TARGET = sparse_matrix
+endif
 
 # Regra principal
 all: $(TARGET)
