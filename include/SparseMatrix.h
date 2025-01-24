@@ -7,7 +7,7 @@
 class SparseMatrix
 {
 private:
-    Node* m_head = new Node(0, 0);    // inicializa o nó "sentinela" sem valor
+    Node* m_head = new Node(0,0);    // inicializa o nó "sentinela" sem valor
     int linhas = 0;
     int colunas = 0;
 
@@ -28,12 +28,13 @@ public:
 
     void insert(int i, int j, double value);
     void print();
+    void clear();
 
     double get(int i, int j);
 
     int getLines();
     int getCols();
-    int getSize();
+    int size();
 
     SparseMatrix& operator=(const SparseMatrix& matriz);
 };

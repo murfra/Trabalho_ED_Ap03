@@ -6,7 +6,7 @@
 // Implementação do construtor da classe
 SparseMatrix::SparseMatrix(int m, int n) : linhas(m), colunas(n) {
     if (m <= 0 || n <= 0) throw std::out_of_range("Invalid line or column");
-  
+    
     // Inicilizando nós sentinela para cada linha m e coluna n
     for(int i = m+n; i >= 1; i--) {
         if (i > n) { // inicilizando as colunas (0, n)
@@ -24,23 +24,12 @@ SparseMatrix::SparseMatrix(int m, int n) : linhas(m), colunas(n) {
 
 // Implementação do destrutor da classe
 SparseMatrix::~SparseMatrix() {
-    //Cara, a ideia é usar como condição se o final do loop é igual a cabeça
-    //fica mais ou menos assim
-    //  col
-    //  |
-    //  v
-    //[][][][]
-    //[]()()() atual recebe o col->abaixo(1,1)
-    //[]()()()
-    //[]()()()
-    //
-    // dai o temp recebe o atual só pro atual poder receber o atual->abaixo (se deslocar)
-    // apaga o temp que aponta para o (1,1) {antiga posição do atual}
-    // dai faz algo similar só que com as colunas sentinelas
-    // por último é que apaga a coluna da cabeça
+    clear();
+    delete m_head;
+}
 
+void SparseMatrix::clear(){
     // Libera os nós em cada coluna
-
     // Começa de (0, 1) 
     Node* col = m_head->direito;
     while (col != m_head) { // Anda as colunas
@@ -63,8 +52,6 @@ SparseMatrix::~SparseMatrix() {
         linha = linha->abaixo;
         delete temp; // Libera o nó sentinela da linha
     }
-
-    delete m_head;
 }
 
 void SparseMatrix::insert(int i, int j, double value) {
@@ -100,29 +87,28 @@ void SparseMatrix::insert(int i, int j, double value) {
     }
 }
 
-// Possível erro: caso em que i e j não estão definidos na matriz
 double SparseMatrix::get(int i, int j) {
-    //Verifica se os parâmetros i(linha) e j (coluna)
-    //estão dentro dos limites
+    
     if (i <= 0 || i > linhas || j <= 0 || j > colunas) {
         throw std::out_of_range("Invalid line or column");
     }
 
-    //Cria um ponteiro para Node que recebe m_head
-    Node* aux = m_head;
-    
-    //Percorre até a coluna especificada pelo paramêtro j
-    while (aux->coluna != j) aux = aux->direito;
-    
-    //Percorre até a linha especificada pelo parâmetro i
-    while (aux->linha != i) aux = aux->abaixo;
+    Node* aux = m_head->abaixo;
 
-    //Por fim, retorna o valor apontado pelo ponteiro
-    //para Node ax
-    return aux->valor;
+    while (aux->linha != m_head->linha && aux->linha < i) aux = aux->abaixo;
+    
+    if (aux == m_head || aux->linha != i) return 0; 
+    
+    Node* aux2 = aux->direito;
+
+    while (aux2 != aux && aux2->coluna < j) aux2 = aux2->direito;
+    
+    if (aux2 == aux || aux2->coluna != j) return 0; 
+    
+    return aux2->valor;
 }
 
-void SparseMatrix::print() { // acredito que dê pra melhorar
+void SparseMatrix::print() {
     Node *aux = m_head->abaixo;
 
     for (int i = 1; i <= linhas; i++) {
@@ -145,10 +131,43 @@ SparseMatrix& SparseMatrix::operator=(const SparseMatrix& matriz) {
     this->m_head = new Node(0, 0);
     linhas = matriz.linhas;
     colunas = matriz.colunas;
-    
-    SparseMatrix *m = new SparseMatrix(linhas, colunas);
 
-    return *m;
+    Node* aux = matriz.m_head->direito;
+    Node* temp = m_head;
+
+    // Inicializa todos os nós colunas sentinelas
+    while(aux != matriz.m_head) {
+        Node* auy = new Node(aux->linha, aux->coluna, aux->valor);
+        auy->direito = m_head->direito;
+        m_head->direito = auy;
+        aux = aux->direito;
+    }
+    
+    aux = matriz.m_head->abaixo;
+    while (aux != matriz.m_head) {
+        Node* auy = new Node(aux->linha, aux->coluna, aux->valor);
+        auy->abaixo = m_head;
+        temp->abaixo = auy;
+        temp = temp->abaixo;
+        aux = aux->abaixo;
+    }
+
+    Node* atualM = matriz.m_head->abaixo->direito;
+    for (int i = 0, j = linhas; i <= colunas && atualM->coluna != 0; i++) {
+        if (atualM->valor != 0) {
+            insert(atualM->linha, atualM->coluna, atualM->valor);
+        }
+        atualM = atualM->direito;
+
+        if (i == colunas && j > 0) {
+            atualM = atualM->direito;
+            atualM = atualM->abaixo->direito;
+            i = 0;
+            j--;
+        }
+    }
+
+    return *this;
 }
 
 int SparseMatrix::getLines() {
@@ -159,6 +178,6 @@ int SparseMatrix::getCols() {
   return colunas;
 }
 
-int SparseMatrix::getSize() {
+int SparseMatrix::size() {
   return linhas*colunas;
 }
