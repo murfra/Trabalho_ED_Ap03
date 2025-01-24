@@ -53,12 +53,34 @@ SparseMatrix* sum(SparseMatrix& A, SparseMatrix& B) {
 
     else{
         cout << "Não é possível somar matrizes de dimensões distintas ;(" 
-        << "Só é possível caso seja 2x2, 3x3 e por assim vai..." << endl;
+             << "Só é possível caso seja 2x2, 3x3 e por assim vai..." << endl;
         return new SparseMatrix();
     }
 }
 
-SparseMatrix multiply(SparseMatrix& A, SparseMatrix& B) {
+SparseMatrix* multiply(SparseMatrix& A, SparseMatrix& B) {
+    if (A.getCols() == B.getLines())
+    {
+        SparseMatrix* C = new SparseMatrix(A.getCols(), B.getCols());
+        double soma = 0;
+        for(int i = 1; i <= C->getLines(); i++){
+            for (int j = 1; j <= C->getCols(); j++)
+            {
+                soma = A.get(i, j) + B.get(j, i);
+                C->insert(i, j, soma);
+            }
+            soma = 0;
+        }
+
+        return C;
+    }
+
+    else{
+        cout << "Não é possível multiplicar matrizes de dimensões distintas ;(" 
+             << "Só é possível caso seja 2x2, 3x3 e por assim vai..." << endl;
+        return new SparseMatrix();
+    }
+
 }
 
 void displayMenu() {
@@ -96,7 +118,7 @@ int main(int argc, char const *argv[]) {
     string arg1 = string(argv[1]);
 
     SparseMatrix A = SparseMatrix(3, 3);
-    SparseMatrix B = SparseMatrix(3,3);
+    SparseMatrix B = SparseMatrix(3, 3);
 
     // leitura do arquivo
     if (argc == 1 || arg1 == "-h" || arg1 == "--help") help();
