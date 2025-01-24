@@ -75,17 +75,13 @@ SparseMatrix* multiply(SparseMatrix& A, SparseMatrix& B) {
             for (int k = 1; k <= A.getCols(); k++) {
                 soma += A.get(i, k) * B.get(k, j);
             }
-
-            // Insere !='s de zero, somente
-            if (soma != 0) {
-                C->insert(i, j, soma);
-            }
+            
+            C->insert(i, j, soma);
         }
     }
 
     return C;
 }
-
 
 void displayMenu() {
     // Exibe o nome de usuário do aparelho
