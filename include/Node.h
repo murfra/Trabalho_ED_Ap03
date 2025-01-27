@@ -2,8 +2,7 @@
 #define NODE_H
 
 // Estrutura do nó para as matrizes esparsas
-struct Node
-{
+struct Node {
     int linha;
     int coluna;
     double valor;
@@ -11,9 +10,10 @@ struct Node
     Node *direito;
 
     // Construtor
-    Node(int lin, int col) : linha(lin), coluna(col), abaixo(this), direito(this) {}
+    Node(int lin, int col)
+        : linha(lin), coluna(col), abaixo(this), direito(this) {}
 
-    // Construtor 
+    // Construtor
     Node(int lin, int col, double value) : Node(lin, col) {
         this->valor = value;
     }
