@@ -90,7 +90,8 @@ SparseMatrix *multiply(SparseMatrix &A, SparseMatrix &B) {
 
 void displayMenu() {
   cout << "Olá, seja bem-vindo(a)!\n";
-  cout << "ATENÇÃO: Caso precise ver os comandos digite: !comandos" << endl;
+  cout << "ATENÇÃO: Caso precise ver os comandos digite: ajuda\n";
+  cout << setfill('-') << setw(51) << "" << endl;
 }
 
 // Menu de ajuda
@@ -99,51 +100,61 @@ void help() {
        << setw(2) << ""
        << "./sparse_matrix [-h | --help] [-f | --file=ARQUIVO]\n";
 
-  cout << "\n" << setw(2) << "" << "-h, --help" << setw(14) << "";
+  cout << "\n" << setw(2) << "" << "-h, --help" << setw(20) << "";
   cout << "Mostra opções de ajuda\n";
-  cout << "\n" << setw(2) << "" << "-f, --file=ARQUIVO" << setw(14) << "";
+  cout << setw(2) << "" << "-f, --file=ARQUIVO" << setw(12) << "";
   cout << "Lê um ARQUIVO que especifica uma matriz esparsa" << endl;
 }
 
 void comandos() {
   cout << "\nComandos disponíveis:\n"
-       << setw(2) << "" << "!comandos - Exibe esta lista de comandos\n"
-       << setw(2) << ""
-       << "create i j - Cria uma matriz esparsa com i linhas e j colunas\n"
-       << setw(2) << ""
-       << "size i - Exibe o número de elementos da matriz de índice i\n"
-       << setw(2) << ""
-       << "insert i j v l - Insere o valor v na célula (i, j) da matriz de "
-          "índice l\n"
-       << setw(2) << ""
-       << "get i j l - Obtém o valor na célula (i, j) da matriz de índice l\n"
-       << setw(2) << "" << "print l - Exibe a matriz de índice l\n"
-       << setw(2) << ""
-       << "sum a b - Soma as matrizes de índices a e b e armazena o resultado "
-          "no vetor\n"
-       << setw(2) << ""
-       << "multiply a b - Multiplica as matrizes de índices a e b e armazena o "
-          "resultado no vetor\n"
-       << setw(2) << ""
-       << "show - Exibe todas as matrizes armazenadas no vetor\n"
-       << setw(2) << "" << "exit - Sai do programa e libera a mémoria\n";
+       << setw(2) << "" << "[ajuda | help]"
+       << setw(13) << "" << "Exibe esta lista de comandos\n"
+       << setw(2) << "" << "[create] <m> <n>"
+       << setw(15) << "" << "Cria uma matriz esparsa com m linhas e n colunas\n"
+       << setw(2) << "" << "[size] <i>"
+       << setw(21) << "" << "Exibe o tamanho da matriz de índice i\n"
+       << setw(2) << "" << "[insert] <i> <m> <n> <v>"
+       << setw(7) << "" << "Insere o valor v na célula (m, n) da matriz de índice i\n"
+       << setw(2) << "" << "[get] <i> <m> <n>"
+       << setw(14) << "" << "Obtém o valor na célula (m, n) da matriz de índice i\n"
+       << setw(2) << "" << "[print] <i>"
+       << setw(20) << "" << "Exibe a matriz de índice i\n"
+       << setw(2) << "" << "[sum] <a> <b>"
+       << setw(18) << "" << "Soma as matrizes de índices a e b e armazena o resultado no vetor\n"
+       << setw(2) << "" << "[multiply] <a> <b>"
+       << setw(13) << "" << "Multiplica as matrizes de índices a e b e armazena o resultado no vetor\n"
+       << setw(2) << "" << "[show]" << setw(25) << "" << "Exibe todas as matrizes armazenadas no vetor\n"
+       << setw(2) << "" << "[exit]" << setw(25) << "" << "Sai do programa e libera a mémoria\n";
 }
 
 int main(int argc, char const *argv[]) {
-  string arg1 = string(argv[1]);
 
   vector<SparseMatrix> matrizes;
 
-  // leitura do arquivo
-  if (argc == 1 || arg1 == "-h" || arg1 == "--help")
-    help();
-  else if (arg1 == "-f" || arg1 == "--file") {
-    matrizes.push_back(SparseMatrix(1, 1));
-    cout << "Arquivo carregado!" << endl;
-    readSparseMatrix(matrizes[0], argv[2]);
-    matrizes[0].print();
-  } else
-    displayMenu();
+  if (argc > 1) {
+      string arg1 = string(argv[1]);
+      if (arg1 == "-h" || arg1 == "--help") {
+          help();
+          return 0;
+      }
+      else {
+          displayMenu();
+          // leitura do arquivo
+          if (arg1.find("--file=") == 0) {
+              matrizes.push_back(SparseMatrix());
+              readSparseMatrix(matrizes[0], arg1.substr(7));
+              cout << "Arquivo carregado!" << endl;
+          }
+          else if (arg1 == "-f" || arg1 == "--file") {
+              matrizes.push_back(SparseMatrix());
+              readSparseMatrix(matrizes[0], argv[2]);
+              cout << "Arquivo carregado!" << endl;
+          }
+          cout << "> ";
+      }
+  }
+  else displayMenu();
 
   while (true) {
     string comando, token;
@@ -152,10 +163,6 @@ int main(int argc, char const *argv[]) {
     ss >> token;
 
     cout << "$" << ss.str() << endl;
-    // comandos disponíveis
-    if (token == "!comandos") {
-      comandos();
-    }
 
     // exit
     if (token == "exit") {
@@ -174,30 +181,30 @@ int main(int argc, char const *argv[]) {
     else if (token == "size") {
       int i;
       ss >> i;
-      cout << "size matrix " << i << ": " << matrizes[i].size();
+      cout << "Tamanho da matriz " << i << ": " << matrizes[i].size() << endl;
     }
 
     // insert i, j, v(valor) l
     else if (token == "insert") {
-      int i, j, l;
+      int i, m, n;
       double v;
-      ss >> i >> j >> v >> l;
-      matrizes[l].insert(i, j, v);
+      ss >> i >> m >> n >> v;
+      matrizes[i].insert(m, n, v);
     }
 
     // get da célula i, j
     else if (token == "get") {
-      int i, j, l;
-      ss >> i >> j >> l;
-      cout << "valor na célula (" << i << ", " << j
-           << ") é: " << matrizes[l].get(i, j) << endl;
+      int i, m, n;
+      ss >> i >> m >> n;
+      cout << "Valor na célula (" << m << ", " << n
+           << ") é: " << matrizes[i].get(m, n) << endl;
     }
 
     // print matriz i
     else if (token == "print") {
-      int l;
-      ss >> l;
-      matrizes[l].print();
+      int i;
+      ss >> i;
+      matrizes[i].print();
     }
 
     // somar matrizes A e B
@@ -231,9 +238,15 @@ int main(int argc, char const *argv[]) {
       }
     }
 
+    // comandos disponíveis
+    else if (token == "ajuda" || token == "help") {
+      comandos();
+    }
+
     else {
       cout << "O comando que você inseriu é inválido/ não existe ;( " << endl;
     }
+    cout << "> ";
   }
 
   return 0;
