@@ -33,12 +33,9 @@ void readSparseMatrix(SparseMatrix& m, string filename) {
   double v;
 
   file >> lin >> col;
-  SparseMatrix aux = SparseMatrix(lin, col);
+  m = SparseMatrix(lin, col);
 
-  while (file >> i >> j >> v) aux.insert(i, j, v);
-
-  m = SparseMatrix(aux);
-
+  while (file >> i >> j >> v) m.insert(i, j, v);
 }
 
 // Função que realiza a operação de soma

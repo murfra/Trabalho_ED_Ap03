@@ -27,7 +27,6 @@ SparseMatrix::SparseMatrix(int m, int n) : linhas(m), colunas(n) {
 
 SparseMatrix::SparseMatrix(const SparseMatrix& matrix) {
     if (this != &matrix) {
-        clear();
         linhas = matrix.linhas;
         colunas = matrix.colunas;
         initializeMatrix(linhas, colunas);
