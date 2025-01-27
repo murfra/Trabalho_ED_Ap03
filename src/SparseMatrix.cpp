@@ -32,15 +32,25 @@ SparseMatrix::SparseMatrix(const SparseMatrix& matrix) {
         colunas = matrix.colunas;
         initializeMatrix(linhas, colunas);
 
-        Node* auxL = matrix.m_head->abaixo;
-        while (auxL != matrix.m_head) {
-            Node *auxC = auxL->direito;
-            while (auxC != auxL) {
-                insert(auxC->linha, auxC->coluna, auxC->valor);
-                auxC = auxC->direito;
-            }
-            auxL = auxL->abaixo;
+        Node* aux = matrix.m_head->direito;
+        Node* temp = m_head;
+
+        // Inicializa todos os nós colunas sentinelas
+        while(aux != matrix.m_head) {
+            Node* auy = new Node(aux->linha, aux->coluna, aux->valor);
+            auy->direito = m_head->direito;
+            m_head->direito = auy;
+            aux = aux->direito;
         }
+        
+        aux = matrix.m_head->abaixo;
+        while (aux != matrix.m_head) {
+            Node* auy = new Node(aux->linha, aux->coluna, aux->valor);
+            auy->abaixo = m_head;
+            temp->abaixo = auy;
+            temp = temp->abaixo;
+            aux = aux->abaixo;
+        } 
     }
 }
 
@@ -161,17 +171,26 @@ SparseMatrix& SparseMatrix::operator=(const SparseMatrix& matrix) {
         colunas = matrix.colunas;
         initializeMatrix(linhas, colunas);
 
-        Node* auxL = matrix.m_head->abaixo;
-        while (auxL != matrix.m_head) {
-            Node *auxC = auxL->direito;
-            while (auxC != auxL) {
-                insert(auxC->linha, auxC->coluna, auxC->valor);
-                auxC = auxC->direito;
-            }
-            auxL = auxL->abaixo;
+        Node* aux = matrix.m_head->direito;
+        Node* temp = m_head;
+
+        // Inicializa todos os nós colunas sentinelas
+        while(aux != matrix.m_head) {
+            Node* auy = new Node(aux->linha, aux->coluna, aux->valor);
+            auy->direito = m_head->direito;
+            m_head->direito = auy;
+            aux = aux->direito;
+        }
+        
+        aux = matrix.m_head->abaixo;
+        while (aux != matrix.m_head) {
+            Node* auy = new Node(aux->linha, aux->coluna, aux->valor);
+            auy->abaixo = m_head;
+            temp->abaixo = auy;
+            temp = temp->abaixo;
+            aux = aux->abaixo;
         }
     }
-
     return *this;
 }
 
