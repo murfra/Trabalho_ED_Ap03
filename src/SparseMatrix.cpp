@@ -3,10 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 
-// Implementação do construtor da classe
-SparseMatrix::SparseMatrix(int m, int n) : linhas(m), colunas(n) {
-    if (m <= 0 || n <= 0) throw std::out_of_range("Invalid line or column");
-    
+void SparseMatrix::initializeMatrix(int m, int n) {
     // Inicilizando nós sentinela para cada linha m e coluna n
     for(int i = m+n; i >= 1; i--) {
         if (i > n) { // inicilizando as colunas (0, n)
@@ -22,9 +19,35 @@ SparseMatrix::SparseMatrix(int m, int n) : linhas(m), colunas(n) {
     }
 }
 
+// Implementação do construtor da classe
+SparseMatrix::SparseMatrix(int m, int n) : linhas(m), colunas(n) {
+    if (m <= 0 || n <= 0) throw std::out_of_range("Invalid line or column");
+    initializeMatrix(m, n);
+}
+
+SparseMatrix::SparseMatrix(const SparseMatrix& matrix) {
+    if (this != &matrix) {
+        clear();
+        linhas = matrix.linhas;
+        colunas = matrix.colunas;
+        initializeMatrix(linhas, colunas);
+
+        Node* auxL = matrix.m_head->abaixo;
+        while (auxL != matrix.m_head) {
+            Node *auxC = auxL->direito;
+            while (auxC != auxL) {
+                insert(auxC->linha, auxC->coluna, auxC->valor);
+                auxC = auxC->direito;
+            }
+            auxL = auxL->abaixo;
+        }
+    }
+}
+
 // Implementação do destrutor da classe
 SparseMatrix::~SparseMatrix() {
     clear();
+    // m_head = nullptr;
     delete m_head;
 }
 
@@ -52,22 +75,27 @@ void SparseMatrix::clear(){
         linha = linha->abaixo;
         delete temp; // Libera o nó sentinela da linha
     }
+
+    m_head->direito = m_head;
+    m_head->abaixo = m_head;
 }
 
 void SparseMatrix::insert(int i, int j, double value) {
     // Teste de verificação de limites para as linhas
-    // veja que não podem ser negativas
     if (i <= 0 || i > linhas || j <= 0 || j > colunas) {
         throw std::out_of_range("Invalid line or column");
     }
-    
     else if (value != 0) {
         Node *aux = m_head->direito;
 
         // move o aux até a coluna j
-        while (aux->coluna != j) aux = aux->direito;
+        while (aux->coluna != j) {
+            aux = aux->direito;
+        }
         // move o aux até a linha i ou até quse seja igual a 0
-        while (aux->abaixo->linha != 0 && aux->abaixo->linha != i) aux = aux->abaixo;
+        while (aux->abaixo->linha != 0 && aux->abaixo->linha != i) {
+            aux = aux->abaixo;
+        }
 
         // verifica se já existe uma célula na posição i, j
         if (aux->abaixo->linha == i) aux->abaixo->valor = value;
@@ -77,37 +105,35 @@ void SparseMatrix::insert(int i, int j, double value) {
             aux->abaixo = temp;
 
             aux = m_head->abaixo; // redefine aux para começar da linha 1, coluna 0
-            while (aux->linha != i) aux = aux->abaixo; // move o aux até a linha i
+            while (aux->linha != i) {
+                aux = aux->abaixo; // move o aux até a linha i
+            }
             
             // move até o último "direito", até a última coluna, no caso
             while (aux->direito->coluna != 0) aux = aux->direito;
 
             temp->direito = aux->direito; // faz temp apontar para o começo da linha
             aux->direito = temp; // aponta o direito para o temp
-            
         }
     }
 }
 
 double SparseMatrix::get(int i, int j) {
-    
     if (i <= 0 || i > linhas || j <= 0 || j > colunas) {
         throw std::out_of_range("Invalid line or column");
     }
 
-    Node* aux = m_head->abaixo;
-
-    while (aux->linha != m_head->linha && aux->linha < i) aux = aux->abaixo;
+    Node* aux_linha = m_head->abaixo;
+    while (aux_linha->linha != m_head->linha && aux_linha->linha < i) aux_linha = aux_linha->abaixo;
     
-    if (aux == m_head || aux->linha != i) return 0; 
+    if (aux_linha == m_head || aux_linha->linha != i) return 0; 
     
-    Node* aux2 = aux->direito;
-
-    while (aux2 != aux && aux2->coluna < j) aux2 = aux2->direito;
+    Node* aux_coluna = aux_linha->direito;
+    while (aux_coluna != aux_linha && aux_coluna->coluna < j) aux_coluna = aux_coluna->direito;
     
-    if (aux2 == aux || aux2->coluna != j) return 0; 
+    if (aux_coluna == aux_linha || aux_coluna->coluna != j) return 0; 
     
-    return aux2->valor;
+    return aux_coluna->valor;
 }
 
 void SparseMatrix::print() {
@@ -128,58 +154,35 @@ void SparseMatrix::print() {
     }
 }
 
-SparseMatrix& SparseMatrix::operator=(const SparseMatrix& matriz) {
-    this->~SparseMatrix();
-    this->m_head = new Node(0, 0);
-    linhas = matriz.linhas;
-    colunas = matriz.colunas;
+SparseMatrix& SparseMatrix::operator=(const SparseMatrix& matrix) {
+    if (this != &matrix) {
+        clear();
+        linhas = matrix.linhas;
+        colunas = matrix.colunas;
+        initializeMatrix(linhas, colunas);
 
-    Node* aux = matriz.m_head->direito;
-    Node* temp = m_head;
-
-    // Inicializa todos os nós colunas sentinelas
-    while(aux != matriz.m_head) {
-        Node* auy = new Node(aux->linha, aux->coluna, aux->valor);
-        auy->direito = m_head->direito;
-        m_head->direito = auy;
-        aux = aux->direito;
-    }
-    
-    aux = matriz.m_head->abaixo;
-    while (aux != matriz.m_head) {
-        Node* auy = new Node(aux->linha, aux->coluna, aux->valor);
-        auy->abaixo = m_head;
-        temp->abaixo = auy;
-        temp = temp->abaixo;
-        aux = aux->abaixo;
-    }
-
-    Node* atualM = matriz.m_head->abaixo->direito;
-    for (int i = 0, j = linhas; i <= colunas && atualM->coluna != 0; i++) {
-        if (atualM->valor != 0) {
-            insert(atualM->linha, atualM->coluna, atualM->valor);
-        }
-        atualM = atualM->direito;
-
-        if (i == colunas && j > 0) {
-            atualM = atualM->direito;
-            atualM = atualM->abaixo->direito;
-            i = 0;
-            j--;
+        Node* auxL = matrix.m_head->abaixo;
+        while (auxL != matrix.m_head) {
+            Node *auxC = auxL->direito;
+            while (auxC != auxL) {
+                insert(auxC->linha, auxC->coluna, auxC->valor);
+                auxC = auxC->direito;
+            }
+            auxL = auxL->abaixo;
         }
     }
 
     return *this;
 }
 
-int SparseMatrix::getLines() {
+int SparseMatrix::getLines() const {
   return linhas;
 }
 
-int SparseMatrix::getCols() {
+int SparseMatrix::getCols() const {
   return colunas;
 }
 
-int SparseMatrix::size() {
+int SparseMatrix::size() const {
   return linhas*colunas;
 }

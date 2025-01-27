@@ -3,6 +3,7 @@
 
 #include <stdexcept>
 #include "Node.h"
+#include <string>
 
 class SparseMatrix
 {
@@ -10,6 +11,9 @@ private:
     Node* m_head = new Node(0,0);    // inicializa o nó "sentinela" sem valor
     int linhas = 0;
     int colunas = 0;
+
+    void initializeMatrix(int m, int n);
+    void clear();
 
 public:
     SparseMatrix() = default;
@@ -20,6 +24,8 @@ public:
     // cada linha e coluna
     SparseMatrix(int m, int n);
 
+    SparseMatrix(const SparseMatrix& matrix);
+    
     // Destrutor da classe SparseMatrix
     // Essa função apaga (desaloca a memória) os nós de
     // cada linha e coluna (m e n respectivamente) e
@@ -28,15 +34,13 @@ public:
 
     void insert(int i, int j, double value);
     void print();
-    void clear();
-
     double get(int i, int j);
 
-    int getLines();
-    int getCols();
-    int size();
+    int getLines() const;
+    int getCols() const;
+    int size() const;
 
-    SparseMatrix& operator=(const SparseMatrix& matriz);
+    SparseMatrix& operator=(const SparseMatrix& matrix);
 };
 
 #endif
