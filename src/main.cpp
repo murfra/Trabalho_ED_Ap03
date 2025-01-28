@@ -104,9 +104,9 @@ void help() {
 }
 
 void comandos() {
-    cout
+    cout << setfill(' ')
         << "\nComandos disponíveis:\n"
-        << setw(2) << "" << "[ajuda | help]" << setw(13) << ""
+        << setw(2) << "" << "[ajuda | help]" << setw(17) << ""
         << "Exibe esta lista de comandos\n"
         << setw(2) << "" << "[create] <m> <n>" << setw(15) << ""
         << "Cria uma matriz esparsa com m linhas e n colunas\n"
@@ -149,10 +149,10 @@ int main(int argc, char const *argv[]) {
                 readSparseMatrix(matrizes[0], argv[2]);
                 cout << "Arquivo carregado!" << endl;
             }
-            cout << "> ";
         }
     } else
         displayMenu();
+    cout << "> ";
 
     while (true) {
         string comando, token;
